@@ -1,0 +1,26 @@
+{
+  "source_repository": "https://github.com/firedragoq/DevGram",
+  "source_commit": "e1d72235c9b6caf8fa24e6402a37e58f91d80888",
+  "source_worktree_changes": [
+    " M TMessagesProj/src/main/java/org/telegram/messenger/DevGramPlugins.java",
+    " M TMessagesProj/src/main/python/devgram/__init__.py"
+  ],
+  "plugin_api": 3,
+  "files": {
+    "android/org/telegram/messenger/DevGramDevServer.java": "9e01b53be7350971ea5d5c9c0d14c5e394ced8a96dae9dd2ee642f80d00e9911",
+    "android/org/telegram/messenger/DevGramPlugins.java": "e0c3198f327139fc26ab19ff6a6ab388f6541af9c9eadcbb8a9eb8d103b175ba",
+    "python/devgram/__init__.py": "3f0bfb1d8e37a12395f16019da19f93cfe8c12dd32f615a7327b9b17a5d1c75e",
+    "python/devgram/android_utils.py": "546b20ede641deac15d44b6ce5e05d1366ec93b7b84804b8b7b5d121c05dc1ee",
+    "python/devgram/client_utils.py": "789b2a9ba6021188d0cc46538b7f73db2d500ccb3e8c7a6ab683e54fead37853",
+    "python/devgram/dev_server.py": "4e650c0bfdd1bc49311ed90d9f91c940306f3a3079a1adaf1a4ec7e917d8181e",
+    "python/devgram/file_utils.py": "5de945f1ea77436346d4595074d644ca7a21efd7fbcd4451d46ae8e945cb321a",
+    "python/devgram/hook_utils.py": "ae3041474014927410a349a14f09358141acf8aa33142da0c8925b03b07fc080",
+    "python/devgram/intents.py": "d60b3d95c6ff5b90b154f41ac21ed17020bcbc0f30c659ba8659881cf5cb9516",
+    "python/devgram/text_formatting.py": "b79b7e7b6596f72ed6d4e21d32f016730dc4947b9ab9158d464c8b9b3145ef05",
+    "python/devgram/ui/__init__.py": "4d14a4fcdb89aec8ae4583a81131efaa30634ac9de75227aa2b7b0075d69008f",
+    "python/devgram/ui/alert.py": "26edf657eaca6f0afe7b4e5ed999e68056f19673318983a88b1a0b8783f6a9e0",
+    "python/devgram/ui/bulletin.py": "6dbc54f7ef560c3dec3b8424a026ab4b3a4ec7bbb4c2512828ff2227ef338d54",
+    "python/devgram/ui/settings.py": "e74eec6525ab9d73280268b114a48377215a3d43405f1b0b09b6df97fd899a1f",
+    "python/devgram_plugins.py": "29922d82dc9251f701bb7a541d995d95ba30d102035f146a724eb68633ba0aeb"
+  }
+}
