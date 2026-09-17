@@ -83,7 +83,7 @@ def main() -> int:
         copied.append(target)
 
     manifest = {
-        "source_repository": "https://github.com/firedragoq/DevGram",
+        "source_repository": "https://github.com/DevGramOfficial/DevGram",
         "source_commit": git_commit(source_root),
         "source_worktree_changes": modified_sources(source_root),
         "plugin_api": 3,

@@ -4,8 +4,8 @@
 `.dgplugin`, нативный мост к Telegram Android и локальный Dev Server.
 
 [Документация](https://docs.devgram.space/docs/introduction) ·
-[DevGram Builder](https://github.com/firedragoq/DevGramBuilder) ·
-[DevGram](https://github.com/firedragoq/DevGram) ·
+[DevGram Builder](https://github.com/DevGramOfficial/DevGramBuilder) ·
+[DevGram](https://github.com/DevGramOfficial/DevGram) ·
 [Канал новостей](https://t.me/DevGramNews)
 
 ## Что находится в репозитории

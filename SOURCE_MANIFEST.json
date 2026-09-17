@@ -1,5 +1,5 @@
 {
-  "source_repository": "https://github.com/firedragoq/DevGram",
+  "source_repository": "https://github.com/DevGramOfficial/DevGram",
   "source_commit": "e1d72235c9b6caf8fa24e6402a37e58f91d80888",
   "source_worktree_changes": [
     " M TMessagesProj/src/main/java/org/telegram/messenger/DevGramPlugins.java",

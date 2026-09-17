@@ -49,4 +49,4 @@ Runtime проверяет, что:
 - текущая версия приложения и уровень API соответствуют манифесту.
 
 Для создания и проверки пакета используется
-[DevGram Builder](https://github.com/firedragoq/DevGramBuilder).
+[DevGram Builder](https://github.com/DevGramOfficial/DevGramBuilder).
