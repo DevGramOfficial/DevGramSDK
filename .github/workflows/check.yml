@@ -17,3 +17,5 @@ jobs:
           python-version: "3.11"
       - name: Check mirrored SDK sources
         run: python3 tools/check_sources.py
+      - name: Test dgplugin tools
+        run: python3 -m unittest discover -s tests -v

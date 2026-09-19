@@ -19,6 +19,8 @@
   — нативный мост между Python и Telegram Android.
 - [`android/org/telegram/messenger/DevGramDevServer.java`](android/org/telegram/messenger/DevGramDevServer.java)
   — локальный сервер разработки для загрузки и перезапуска плагинов через ADB.
+- [`tools/dgplugin_tools.py`](tools/dgplugin_tools.py) — функции проверки,
+  безопасной распаковки и анализа пакетов `.dgplugin`.
 
 Это не переписанная документационная версия, а копия реально используемых
 исходников DevGram. Текущий уровень API плагинов — **3**.
@@ -45,6 +47,26 @@ CPython без Android-среды.
 Java-мост зависит от классов Telegram Android, Chaquopy, Android SDK и
 компонентов DevGram. Он опубликован отдельно для чтения, разработки API и
 синхронизации изменений, но не является самостоятельным Android-приложением.
+
+## Просмотр и распаковка `.dgplugin`
+
+Пакет `.dgplugin` не зашифрован: это ZIP-архив с манифестом. Обычная сборка
+содержит читаемые файлы `.py`, а `dgb build -c` — байткод Python 3.11 `.pyc`.
+
+```bash
+python3 tools/dgplugin.py info plugin.dgplugin --files
+python3 tools/dgplugin.py unpack plugin.dgplugin
+python3.11 tools/dgplugin.py decode plugin.dgplugin
+```
+
+`unpack` безопасно извлекает исходники и ресурсы. `decode` дополнительно создаёт
+рядом с каждым `.pyc` файл `.pyc.dis.txt` с дизассемблированием. Для пакета,
+собранного под Python 3.11, команду `decode` нужно запускать именно на Python
+3.11. Точный авторский исходник, имена комментариев и форматирование из `.pyc`
+восстановить невозможно.
+
+Те же операции доступны как функции `inspect_package`, `extract_package`,
+`disassemble_pyc` и `decode_package` из `tools.dgplugin_tools`.
 
 ## Синхронизация с DevGram
 
