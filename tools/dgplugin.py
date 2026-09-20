@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""CLI для просмотра, распаковки и анализа структуры .dgplugin."""
+"""CLI для просмотра и безопасной распаковки .dgplugin."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ import sys
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from tools.dgplugin_tools import PackageError, decode_package, extract_package, inspect_package
+from tools.dgplugin_tools import PackageError, extract_package, inspect_package
 
 
 def _default_output(package: str, suffix: str) -> Path:
@@ -23,7 +23,7 @@ def _default_output(package: str, suffix: str) -> Path:
 def _info(args: argparse.Namespace) -> None:
     info = inspect_package(args.package)
     print(json.dumps(info.manifest, ensure_ascii=False, indent=2))
-    print(f"\nФормат: {'байткод .pyc' if info.compiled else 'исходники .py'}")
+    print("\nФормат: открытые исходники .py")
     print(f"Файлов: {len(info.files)}")
     print(f"Размер распакованных данных: {info.total_size} байт")
     if args.files:
@@ -37,16 +37,6 @@ def _unpack(args: argparse.Namespace) -> None:
     files = extract_package(args.package, output, overwrite=args.force)
     print(f"Распаковано: {output}")
     print(f"Файлов: {len(files)}")
-
-
-def _decode(args: argparse.Namespace) -> None:
-    output = Path(args.output).resolve() if args.output else _default_output(args.package, "-decoded")
-    result = decode_package(args.package, output, overwrite=args.force)
-    print(f"Распаковано: {result.output}")
-    print(f"Файлов: {len(result.extracted)}")
-    print(f"Листингов байткода: {len(result.disassembled)}")
-    if result.disassembled:
-        print("Точный исходный код из .pyc не восстанавливается; созданы файлы .dis.txt.")
 
 
 def parser() -> argparse.ArgumentParser:
@@ -66,11 +56,6 @@ def parser() -> argparse.ArgumentParser:
     unpack.add_argument("-f", "--force", action="store_true", help="перезаписать файлы")
     unpack.set_defaults(handler=_unpack)
 
-    decode = commands.add_parser("decode", help="распаковать пакет и разобрать .pyc")
-    decode.add_argument("package")
-    decode.add_argument("output", nargs="?")
-    decode.add_argument("-f", "--force", action="store_true", help="перезаписать файлы")
-    decode.set_defaults(handler=_decode)
     return result
 
 
