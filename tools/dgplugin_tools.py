@@ -1,9 +1,8 @@
 """Безопасное чтение, распаковка и анализ пакетов ``.dgplugin``.
 
-Формат DevGram не использует шифрование: пакет является ZIP-архивом. Обычная
-сборка содержит исходные ``.py``, а компилированная — байткод ``.pyc``.
-Восстановить из байткода исходный текст один в один нельзя, поэтому этот модуль
-создаёт для ``.pyc`` честный дизассемблированный листинг.
+Внешний пакет всегда остаётся ZIP-совместимым и устанавливается без пароля.
+Защищённая сборка запускает ``.pyc``, а оригинальные ``.py`` хранит во
+вложенном AES-контейнере, который этот модуль раскрывает по паролю автора.
 """
 
 from __future__ import annotations
@@ -21,6 +20,7 @@ import zipfile
 
 
 MAX_ENTRIES = 4096
+PROTECTED_SOURCES_PATH = ".devgram/protected-sources.zip"
 
 
 class PackageError(ValueError):
@@ -42,6 +42,7 @@ class PackageInfo:
     files: tuple[str, ...]
     total_size: int
     compiled: bool
+    protected_sources: bool
 
 
 @dataclass(frozen=True)
@@ -131,6 +132,19 @@ def _read_manifest(archive: zipfile.ZipFile, names: set[str]) -> dict:
     return manifest
 
 
+def _protected_source_path(manifest: dict, names: set[str]) -> str | None:
+    builder = manifest.get("devgram_builder")
+    protected = builder.get("protected_sources") if isinstance(builder, dict) else None
+    if not isinstance(protected, dict):
+        return None
+    if protected.get("format") != "aes-zip-v1":
+        raise PackageError("неподдерживаемый формат защищённых исходников")
+    path = _safe_name(str(protected.get("path") or PROTECTED_SOURCES_PATH))
+    if path not in names:
+        raise PackageError(f"контейнер защищённых исходников не найден: {path}")
+    return path
+
+
 def _target_path(destination: Path, name: str) -> Path:
     target = destination.joinpath(*PurePosixPath(name).parts)
     try:
@@ -150,6 +164,7 @@ def inspect_package(package: str | Path, *, password: str | bytes | None = None)
             entries = _validated_entries(archive)
             names = {name for _info, name in entries}
             manifest = _read_manifest(archive, names)
+            protected_path = _protected_source_path(manifest, names)
             files = tuple(name for entry, name in entries if not entry.is_dir())
             total_size = sum(entry.file_size for entry, _name in entries if not entry.is_dir())
     except PackageError:
@@ -159,7 +174,24 @@ def inspect_package(package: str | Path, *, password: str | bytes | None = None)
     compiled = str(manifest.get("main", "main.py")).endswith(".pyc") or any(
         name.endswith(".pyc") for name in files
     )
-    return PackageInfo(path, manifest, files, total_size, compiled)
+    return PackageInfo(path, manifest, files, total_size, compiled, protected_path is not None)
+
+
+def has_protected_sources(package: str | Path, *, password: str | bytes | None = None) -> bool:
+    """Вернуть ``True``, если пакет содержит AES-контейнер оригинальных исходников."""
+    return inspect_package(package, password=password).protected_sources
+
+
+def _open_protected_sources(data: bytes, password: str | bytes | None):
+    if password is None or password == "" or password == b"":
+        raise PackagePasswordRequired("исходники защищены; укажите пароль")
+    try:
+        import pyzipper
+    except ImportError as error:
+        raise PackageError("для расшифровки исходников установите pyzipper: pip install pyzipper") from error
+    archive = pyzipper.AESZipFile(io.BytesIO(data))
+    archive.setpassword(password.encode("utf-8") if isinstance(password, str) else password)
+    return archive
 
 
 def extract_package(
@@ -176,26 +208,49 @@ def extract_package(
     try:
         with _open_archive(info.path, password) as archive:
             entries = _validated_entries(archive)
+            names = {name for _entry, name in entries}
+            protected_path = _protected_source_path(info.manifest, names)
+            runtime_entries = [item for item in entries if item[1] != protected_path]
+            source_archive = None
+            source_entries: list[tuple[zipfile.ZipInfo, str]] = []
+            if protected_path is not None:
+                source_archive = _open_protected_sources(archive.read(protected_path), password)
+                source_entries = _validated_entries(source_archive)
+                if any(not entry.is_dir() and not name.endswith(".py") for entry, name in source_entries):
+                    raise PackageError("контейнер исходников содержит неподдерживаемые файлы")
+                damaged = source_archive.testzip()
+                if damaged is not None:
+                    raise PackageError(f"повреждённый файл защищённых исходников: {damaged}")
             conflicts = [
                 _target_path(destination, name)
-                for entry, name in entries
+                for entry, name in runtime_entries + source_entries
                 if not entry.is_dir() and _target_path(destination, name).exists()
             ]
             if conflicts and not overwrite:
                 raise PackageError(f"файл уже существует: {conflicts[0]}")
-            for entry, name in entries:
-                target = _target_path(destination, name)
-                if entry.is_dir():
-                    target.mkdir(parents=True, exist_ok=True)
-                    continue
-                target.parent.mkdir(parents=True, exist_ok=True)
-                with archive.open(entry) as source, target.open("wb") as sink:
-                    while True:
-                        chunk = source.read(1024 * 1024)
-                        if not chunk:
-                            break
-                        sink.write(chunk)
-                extracted.append(target)
+            try:
+                for current_archive, current_entries in (
+                    (archive, runtime_entries),
+                    (source_archive, source_entries),
+                ):
+                    if current_archive is None:
+                        continue
+                    for entry, name in current_entries:
+                        target = _target_path(destination, name)
+                        if entry.is_dir():
+                            target.mkdir(parents=True, exist_ok=True)
+                            continue
+                        target.parent.mkdir(parents=True, exist_ok=True)
+                        with current_archive.open(entry) as source, target.open("wb") as sink:
+                            while True:
+                                chunk = source.read(1024 * 1024)
+                                if not chunk:
+                                    break
+                                sink.write(chunk)
+                        extracted.append(target)
+            finally:
+                if source_archive is not None:
+                    source_archive.close()
     except PackageError:
         raise
     except (RuntimeError, NotImplementedError, zipfile.BadZipFile) as error:

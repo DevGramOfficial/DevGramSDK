@@ -9,8 +9,8 @@
   ],
   "plugin_api": 3,
   "files": {
-    "android/org/telegram/messenger/DevGramDevServer.java": "7cdcd566f9780ddeb0b7761a974fdc188ca331185f0d050a405b932d83859d3f",
-    "android/org/telegram/messenger/DevGramPlugins.java": "08a5be6197d19b04c7dd3b840da12dffdc7c504141caaf4ebee8ece46a960705",
+    "android/org/telegram/messenger/DevGramDevServer.java": "9e01b53be7350971ea5d5c9c0d14c5e394ced8a96dae9dd2ee642f80d00e9911",
+    "android/org/telegram/messenger/DevGramPlugins.java": "e0c3198f327139fc26ab19ff6a6ab388f6541af9c9eadcbb8a9eb8d103b175ba",
     "python/devgram/__init__.py": "3f0bfb1d8e37a12395f16019da19f93cfe8c12dd32f615a7327b9b17a5d1c75e",
     "python/devgram/android_utils.py": "546b20ede641deac15d44b6ce5e05d1366ec93b7b84804b8b7b5d121c05dc1ee",
     "python/devgram/client_utils.py": "789b2a9ba6021188d0cc46538b7f73db2d500ccb3e8c7a6ab683e54fead37853",
@@ -23,6 +23,6 @@
     "python/devgram/ui/alert.py": "26edf657eaca6f0afe7b4e5ed999e68056f19673318983a88b1a0b8783f6a9e0",
     "python/devgram/ui/bulletin.py": "6dbc54f7ef560c3dec3b8424a026ab4b3a4ec7bbb4c2512828ff2227ef338d54",
     "python/devgram/ui/settings.py": "e74eec6525ab9d73280268b114a48377215a3d43405f1b0b09b6df97fd899a1f",
-    "python/devgram_plugins.py": "d6c74e736413147563c164fe4039d31d6670b17427c885f834321397ee735c7f"
+    "python/devgram_plugins.py": "4db483e5b26b5e6db323f980ab72cb2463f5a9d90d074ccff98d345bbcf9e7ed"
   }
 }
