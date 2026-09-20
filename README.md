@@ -59,6 +59,18 @@ python3 tools/dgplugin.py unpack plugin.dgplugin
 python3.11 tools/dgplugin.py decode plugin.dgplugin
 ```
 
+Для зашифрованного AES-пакета установите `pyzipper`; инструмент безопасно
+запросит пароль в терминале:
+
+```bash
+python3 -m pip install pyzipper
+python3 tools/dgplugin.py unpack protected.dgplugin
+```
+
+Пароль также можно передать через `-p` или переменную окружения
+`DEVGRAM_PLUGIN_PASSWORD`. Без правильного пароля содержимое AES-пакета не
+читается.
+
 `unpack` безопасно извлекает исходники и ресурсы. `decode` дополнительно создаёт
 рядом с каждым `.pyc` файл `.pyc.dis.txt` с дизассемблированием. Для пакета,
 собранного под Python 3.11, команду `decode` нужно запускать именно на Python

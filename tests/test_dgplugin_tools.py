@@ -8,7 +8,15 @@ import tempfile
 import unittest
 import zipfile
 
-from tools.dgplugin_tools import PackageError, decode_package, extract_package, inspect_package
+from tools.dgplugin_tools import (
+    PackageError,
+    PackagePasswordError,
+    PackagePasswordRequired,
+    decode_package,
+    extract_package,
+    inspect_package,
+    is_package_encrypted,
+)
 
 
 def write_package(path: Path, main: str, data: bytes) -> None:
@@ -64,6 +72,29 @@ class DgpluginToolsTest(unittest.TestCase):
             self.assertEqual(len(result.disassembled), 1)
             listing = result.disassembled[0].read_text("utf-8")
             self.assertIn("STORE_NAME", listing)
+
+    def test_reads_aes_encrypted_package_with_password(self) -> None:
+        import pyzipper
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            package = root / "encrypted.dgplugin"
+            manifest = {"id": "test.plugin", "name": "Test", "main": "main.py"}
+            with pyzipper.AESZipFile(package, "w", compression=pyzipper.ZIP_DEFLATED) as archive:
+                archive.setpassword(b"correct-password")
+                archive.setencryption(pyzipper.WZ_AES, nbits=256)
+                archive.writestr("manifest.json", json.dumps(manifest))
+                archive.writestr("main.py", "value = 42\n")
+            self.assertTrue(is_package_encrypted(package))
+            with self.assertRaises(PackagePasswordRequired):
+                inspect_package(package)
+            with self.assertRaises(PackagePasswordError):
+                inspect_package(package, password="wrong-password")
+            info = inspect_package(package, password="correct-password")
+            self.assertEqual(info.manifest["id"], "test.plugin")
+            output = root / "decoded"
+            extract_package(package, output, password="correct-password")
+            self.assertEqual((output / "main.py").read_text(), "value = 42\n")
 
 
 if __name__ == "__main__":

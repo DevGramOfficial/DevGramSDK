@@ -70,3 +70,17 @@ python3.11 tools/dgplugin.py decode example.dgplugin
 
 Результат сохраняется в файлах `.pyc.dis.txt`; это представление инструкций
 байткода, а не точное восстановление исходного текста.
+
+## Зашифрованные пакеты
+
+DevGramBuilder поддерживает AES-128, AES-192 и AES-256. Для расшифровки на ПК
+нужен `pyzipper` и пароль автора:
+
+```bash
+python3 -m pip install pyzipper
+python3 tools/dgplugin.py unpack protected.dgplugin
+```
+
+Если пароль не указан через `-p` или `DEVGRAM_PLUGIN_PASSWORD`, CLI запросит его
+без отображения введённых символов. DevGram также запрашивает пароль при
+установке такого пакета.
