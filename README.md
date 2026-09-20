@@ -50,29 +50,14 @@ Java-мост зависит от классов Telegram Android, Chaquopy, And
 
 ## Просмотр и распаковка `.dgplugin`
 
-Обычный пакет `.dgplugin` — это ZIP-архив с манифестом без шифрования. Сборка
+Пакет `.dgplugin` не зашифрован: это ZIP-архив с манифестом. Обычная сборка
 содержит читаемые файлы `.py`, а `dgb build -c` — байткод Python 3.11 `.pyc`.
-При защищённой сборке DevGram запускает `.pyc`, а оригинальные `.py` находятся
-во вложенном AES-контейнере.
 
 ```bash
 python3 tools/dgplugin.py info plugin.dgplugin --files
 python3 tools/dgplugin.py unpack plugin.dgplugin
 python3.11 tools/dgplugin.py decode plugin.dgplugin
 ```
-
-Защищённый пакет устанавливается в DevGram без пароля. Пароль требуется только
-для восстановления точных авторских исходников на ПК. Установите `pyzipper`,
-после чего инструмент безопасно запросит пароль в терминале:
-
-```bash
-python3 -m pip install pyzipper
-python3 tools/dgplugin.py unpack protected.dgplugin
-```
-
-Пароль также можно передать через `-p` или переменную окружения
-`DEVGRAM_PLUGIN_PASSWORD`. Без него остаются доступными манифест, ресурсы и
-исполняемый байткод, но не оригинальные `.py`.
 
 `unpack` безопасно извлекает исходники и ресурсы. `decode` дополнительно создаёт
 рядом с каждым `.pyc` файл `.pyc.dis.txt` с дизассемблированием. Для пакета,

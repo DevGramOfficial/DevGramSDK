@@ -1,11 +1,9 @@
 {
   "source_repository": "https://github.com/DevGramOfficial/DevGram",
-  "source_commit": "fe3f0af9db42c417e0110dc807977fd6567b81d4",
+  "source_commit": "e1d72235c9b6caf8fa24e6402a37e58f91d80888",
   "source_worktree_changes": [
-    " M TMessagesProj/src/main/java/org/telegram/messenger/DevGramDevServer.java",
     " M TMessagesProj/src/main/java/org/telegram/messenger/DevGramPlugins.java",
-    " M TMessagesProj/src/main/python/devgram/__init__.py",
-    " M TMessagesProj/src/main/python/devgram_plugins.py"
+    " M TMessagesProj/src/main/python/devgram/__init__.py"
   ],
   "plugin_api": 3,
   "files": {
@@ -23,6 +21,6 @@
     "python/devgram/ui/alert.py": "26edf657eaca6f0afe7b4e5ed999e68056f19673318983a88b1a0b8783f6a9e0",
     "python/devgram/ui/bulletin.py": "6dbc54f7ef560c3dec3b8424a026ab4b3a4ec7bbb4c2512828ff2227ef338d54",
     "python/devgram/ui/settings.py": "e74eec6525ab9d73280268b114a48377215a3d43405f1b0b09b6df97fd899a1f",
-    "python/devgram_plugins.py": "4db483e5b26b5e6db323f980ab72cb2463f5a9d90d074ccff98d345bbcf9e7ed"
+    "python/devgram_plugins.py": "29922d82dc9251f701bb7a541d995d95ba30d102035f146a724eb68633ba0aeb"
   }
 }
