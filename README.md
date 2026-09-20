@@ -50,8 +50,9 @@ Java-мост зависит от классов Telegram Android, Chaquopy, And
 
 ## Просмотр и распаковка `.dgplugin`
 
-Пакет `.dgplugin` не зашифрован: это ZIP-архив с манифестом. Обычная сборка
+Обычный пакет `.dgplugin` — это ZIP-архив с манифестом без шифрования. Сборка
 содержит читаемые файлы `.py`, а `dgb build -c` — байткод Python 3.11 `.pyc`.
+При необходимости DevGramBuilder может защитить весь архив паролем через AES.
 
 ```bash
 python3 tools/dgplugin.py info plugin.dgplugin --files
